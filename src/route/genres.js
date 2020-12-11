@@ -1,26 +1,22 @@
 const Joi = require('joi');
 const express = require('express');
-const app = express();
+const router = express.Router();
 
-app.use(express.json());
+router.use(express.json());
 
-const genres = [];
+const genres = [
+    { id: 1, name: 'Action' },
+    { id: 2, name: 'Horror' },
+    { id: 3, name: 'Romance' },
+];
 
 // Get the list of genres;
-app.get('/api/genres', (req, res) => {
+router.get('/', (req, res) => {
     res.send(genres);
 });
 
-// Get a genre using id
-app.get('/api/genres/:id', (req, res) => {
-    const genre = getGenre(req.params.id);
-    if (!genre) return res.status(404).send("The genre with the given id was not found.");
-
-    res.send(genre);
-});
-
 // Add a new genre to the list
-app.post('/api/genres', (req, res) => {
+router.post('/', (req, res) => {
     const { error } = validateGenre(req.body);
     if (error) return req.status(400).send(error.details[0].message);
 
@@ -31,9 +27,16 @@ app.post('/api/genres', (req, res) => {
     res.send(genre);
 });
 
+// Get a genre using id
+router.get('/:id', (req, res) => {
+    const genre = getGenre(req.params.id);
+    if (!genre) return res.status(404).send("The genre with the given id was not found.");
+
+    res.send(genre);
+});
 
 // Update a genre
-app.put('/api/genres/:id', (req, res) => {
+router.put('/:id', (req, res) => {
     const genre = getGenre(req.params.id);
     if (!genre) return res.status(404).send("The genre with the given id was not found.");
 
@@ -46,7 +49,7 @@ app.put('/api/genres/:id', (req, res) => {
 });
 
 // Delete a genre
-app.delete('/api/genres/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
     const genre = getGenre(req.params.id);
     if (!genre) return res.status(404).send("The genre with the given id was not found.");
 
@@ -54,7 +57,6 @@ app.delete('/api/genres/:id', (req, res) => {
     genres.splice(index, 1);
     res.send(genre);
 });
-
 
 function getGenre(id) {
     return genres.find(g => g.id === parseInt(id));
@@ -65,5 +67,4 @@ function validateGenre(genre) {
     return Joi.validate(genre, schema);
 }
 
-const port = process.env.PORT || 5000;
-app.listen(port, () => console.log(`Listening on port ${port}...`));
+module.exports = router;
