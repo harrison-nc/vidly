@@ -1,30 +1,8 @@
-const mongoose = require('mongoose');
-const Joi = require('joi');
 const express = require('express');
+const { Customer, validate } = require('../models/customer');
 
-const Schema = mongoose.Schema;
 const router = express.Router();
-
-const Customer = mongoose.model('customer', new Schema({
-    name: {
-        type: String,
-        required: true,
-        minlength: 5,
-        maxlength: 30,
-        trim: true,
-    },
-    phone: {
-        type: String,
-        minlength: 5,
-        maxlength: 15,
-        required: true,
-        trim: true,
-    },
-    isGold: {
-        type: Boolean,
-        default: false,
-    }
-}));
+router.use(express.json());
 
 async function getCustomers() {
     return await Customer.find().sort('name');
@@ -55,34 +33,6 @@ async function removeCustomer(id) {
     return await Customer.findByIdAndRemove(id, { useFindAndModify: false });
 }
 
-function validateCustomer(customer, checkRequiredFields = true) {
-    if (!customer) {
-        return {
-            error: {
-                details: [
-                    {
-                        message: 'A customer object with the required fields must be given.',
-                    }
-                ]
-            }
-        }
-    } else if (checkRequiredFields) {
-        return Joi.validate(customer, {
-            name: Joi.string().required(),
-            phone: Joi.string().required(),
-            isGold: Joi.boolean(),
-        });
-    } else {
-        return Joi.validate(customer, {
-            name: Joi.string(),
-            phone: Joi.string(),
-            isGold: Joi.boolean(),
-        });
-    }
-}
-
-router.use(express.json());
-
 router.get('/', async (req, res) => {
     const customers = await getCustomers();
     res.send(customers);
@@ -97,7 +47,7 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const { error } = validateCustomer(req.body.customer);
+    const { error } = validate(req.body.customer);
     if (error) return res.status(400).send(error.details[0].message);
 
     const customer = await createCustomer(req.body.customer);
@@ -108,7 +58,7 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
-    const { error } = validateCustomer(req.body.customer, false);
+    const { error } = validate(req.body.customer, false);
     if (error) return res.status(400).send(error.details[0].message);
 
     const customer = await updateCustomer(req.params.id, req.body.customer);
