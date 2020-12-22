@@ -8,21 +8,21 @@ async function getCustomer(id) {
     return await Customer.findById(id);
 }
 
-async function createCustomer(newCustomer) {
-    try {
-        const customer = new Customer(newCustomer);
-        return await customer.save();
-    }
-    catch (ex) {
-        for (field in ex.errors) {
-            console.log('Input Error:', ex.errors[field].message);
-        }
-        return null;
-    }
+async function createCustomer(customer) {
+    const newCustomer = new Customer({
+        name: customer.name,
+        phone: customer.phone,
+        isGold: customer.isGold,
+    });
+    return await newCustomer.save();
 }
 
 async function updateCustomer(id, customer) {
-    return await Customer.findByIdAndUpdate(id, customer, { new: true, useFindAndModify: false });
+    return await Customer.findByIdAndUpdate(id, {
+        name: customer.name,
+        phone: customer.phone,
+        isGold: customer.isGold,
+    }, { new: true, useFindAndModify: false });
 }
 
 async function removeCustomer(id) {

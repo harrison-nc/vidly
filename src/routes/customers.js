@@ -22,14 +22,11 @@ router.post('/', async (req, res) => {
     if (error) return res.status(400).send(error.details[0].message);
 
     const customer = await create(req.body.customer);
-
-    if (!customer) return res.status(400).send('The given customer is not valid.');
-
     res.send(customer);
 });
 
 router.put('/:id', async (req, res) => {
-    const { error } = validate(req.body.customer, false);
+    const { error } = validate(req.body.customer);
     if (error) return res.status(400).send(error.details[0].message);
 
     const customer = await update(req.params.id, req.body.customer);

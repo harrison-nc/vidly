@@ -1,5 +1,6 @@
 const express = require('express');
-const { create, update, updateGenre, removeGenre, remove, getAll, get, validate, validateGenre } = require('../db/movie');
+const { create, update, remove, getAll, get, validate } = require('../db/movie');
+const { get: getGenre } = require('../db/genre');
 
 const router = express.Router();
 router.use(express.json());
@@ -18,44 +19,25 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const newMovie = req.body.movie;
-
-    const { error } = validate(newMovie);
+    const { error } = validate(req.body.movie);
     if (error) return res.status(400).send(error.details[0].message);
 
-    const movie = await create(newMovie);
-    if (!movie) return res.status(404).send('The given movie is invalid.');
+    const genre = await getGenre(req.body.movie.genreId);
 
+    if (!genre) return res.status(404).send('The given genre does not exist.');
+
+    const movie = await create(req.body.movie, genre);
     res.send(movie);
 });
 
 router.put('/:id', async (req, res) => {
-    const newMovie = req.body.movie;
-
-    const { error } = validate(newMovie, false);
+    const { error } = validate(req.body.movie);
     if (error) return res.status(400).send(error.details[0].message);
 
-    const movie = await update(req.params.id, newMovie);
+    const genre = await getGenre(req.body.movie.genreId);
+    if (!genre) return res.status(404).send('The given genre does not exist.');
 
-    if (!movie) return res.status(404).send('The movie with the given id was not found.');
-
-    res.send(movie);
-});
-
-router.put('/:id/genre', async (req, res) => {
-    const { error } = validateGenre({ name: req.body.name });
-    if (error) return res.status(400).send(error.details[0].message);
-
-    const movie = await updateGenre(req.params.id, req.body.name);
-
-    if (!movie) return res.status(404).send('The movie with the given id was not found.');
-
-    res.send(movie);
-});
-
-router.delete('/:id/genre', async (req, res) => {
-    const movie = await removeGenre(req.params.id);
-
+    const movie = await update(req.params.id, req.body.movie, genre);
     if (!movie) return res.status(404).send('The movie with the given id was not found.');
 
     res.send(movie);

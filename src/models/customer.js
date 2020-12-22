@@ -3,11 +3,11 @@ const Joi = require('joi');
 
 const Schema = mongoose.Schema;
 
-const Customer = mongoose.model('customer', new Schema({
+const customerSchema = new Schema({
     name: {
         type: String,
         required: true,
-        minlength: 5,
+        minlength: 4,
         maxlength: 30,
         trim: true,
     },
@@ -21,34 +21,23 @@ const Customer = mongoose.model('customer', new Schema({
     isGold: {
         type: Boolean,
         default: false,
+        set: v => v ? true : false,
+        get: v => v ? true : false,
     }
-}));
+});
 
-function validateCustomer(customer, checkRequiredFields = true) {
-    if (!customer) {
-        return {
-            error: {
-                details: [
-                    {
-                        message: 'A customer object with the required fields must be given.',
-                    }
-                ]
-            }
-        }
-    } else if (checkRequiredFields) {
-        return Joi.validate(customer, {
-            name: Joi.string().required(),
-            phone: Joi.string().required(),
-            isGold: Joi.boolean(),
-        });
-    } else {
-        return Joi.validate(customer, {
-            name: Joi.string(),
-            phone: Joi.string(),
-            isGold: Joi.boolean(),
-        });
-    }
+const Customer = mongoose.model('customer', customerSchema);
+
+const inputSchema = Joi.object({
+    name: Joi.string().required().min(4).max(30),
+    phone: Joi.string().min(5).max(15).required(),
+    isGold: Joi.boolean(),
+}).label('customer').required();
+
+function validateCustomer(customer) {
+    return inputSchema.validate(customer);
 }
 
 exports.Customer = Customer;
+exports.schema = customerSchema;
 exports.validate = validateCustomer;

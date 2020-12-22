@@ -21,7 +21,7 @@ router.get('/:id', async (req, res) => {
 // Add a new genre to the list
 router.post('/', async (req, res) => {
     const { error } = validate(req.body);
-    if (error) return req.status(400).send(error.details[0].message);
+    if (error) return res.status(400).send(error.details[0].message);
 
     const genre = await create(req.body.name);
 

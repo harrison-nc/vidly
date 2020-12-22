@@ -10,27 +10,31 @@ async function getMovie(id) {
     return movie;
 }
 
-async function createMovie(newMovie) {
-    const movie = new Movie(newMovie);
-    return await movie.save();
+async function createMovie(movie, genre) {
+    const newMovie = new Movie({
+        title: movie.title,
+        genre: {
+            _id: genre._id,
+            name: genre.name,
+        },
+        numberInStock: movie.numberInStock,
+        dailyRentalRate: movie.dailyRentalRate,
+    });
+    return await newMovie.save();
 }
 
-async function updateMovie(id, movie) {
+async function updateMovie(id, movie, genre) {
     return await Movie.findByIdAndUpdate(id, {
-        $set: { ...movie }
+        $set: {
+            title: movie.title,
+            genre: {
+                _id: genre._id,
+                name: genre.name,
+            },
+            numberInStock: movie.numberInStock,
+            dailyRentalRate: movie.dailyRentalRate,
+        }
     }, { new: true, useFindAndModify: false });
-}
-
-async function updateMovieGenre(id, name) {
-    return await Movie.findByIdAndUpdate(id,
-        { $set: { 'genre.name': name } },
-        { new: true, useFindAndModify: false });
-}
-
-async function removeMovieGenre(id) {
-    return await Movie.findByIdAndUpdate(id,
-        { $unset: { 'genre': '' } },
-        { new: true, useFindAndModify: false });
 }
 
 async function removeMovie(id) {
@@ -39,10 +43,7 @@ async function removeMovie(id) {
 
 exports.create = createMovie;
 exports.update = updateMovie;
-exports.updateGenre = updateMovieGenre;
-exports.removeGenre = removeMovieGenre;
 exports.remove = removeMovie;
 exports.getAll = getMovies;
 exports.get = getMovie;
 exports.validate = validate;
-exports.validateGenre = validateGenre;
