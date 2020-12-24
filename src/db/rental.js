@@ -1,4 +1,8 @@
+const Fawn = require('fawn');
+const mongoose = require('mongoose');
 const { Rental, validate } = require('../models/rental');
+
+Fawn.init(mongoose);
 
 async function getRentals() {
     const rentals = await Rental.find().sort('-dateOut');
@@ -25,10 +29,13 @@ async function createRental(customer, movie) {
         }
     });
 
-    movie.numberInStock--;
-    movie.save();
+    new Fawn.Task()
+        .save('rentals', rental)
+        .update('movies', { _id: movie._id }, {
+            $inc: { numberInStock: -1 }
+        }).run();
 
-    return await rental.save();
+    return rental;
 }
 
 async function removeRental(rentalId) {
