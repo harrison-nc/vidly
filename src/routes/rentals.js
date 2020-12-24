@@ -29,6 +29,8 @@ router.post('/', async (req, res) => {
     const movie = await getMovie(req.body.rental.movieId);
     if (!movie) return res.status(400).send('The movie with the given id was not found.');
 
+    if (movie.numberInStock == 0) return res.status(400).send('The movie is out of stock.');
+
     const rental = await rentals.create(customer, movie);
 
     res.send(rental);

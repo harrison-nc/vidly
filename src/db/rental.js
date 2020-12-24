@@ -1,7 +1,7 @@
 const { Rental, validate } = require('../models/rental');
 
 async function getRentals() {
-    const rentals = await Rental.find().sort('customer.name');
+    const rentals = await Rental.find().sort('-dateOut');
     return rentals;
 }
 
@@ -16,15 +16,17 @@ async function createRental(customer, movie) {
             _id: customer._id,
             name: customer.name,
             phone: customer.phone,
+            isGold: customer.isGold,
         },
         movie: {
             _id: movie._id,
             title: movie.title,
-            genre: {
-                name: movie.genre.name,
-            }
+            dailyRentalRate: movie.dailyRentalRate,
         }
     });
+
+    movie.numberInStock--;
+    movie.save();
 
     return await rental.save();
 }
