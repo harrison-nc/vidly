@@ -7,6 +7,7 @@ async function create(value) {
     return await new User({
         name: value.name,
         email: value.email,
+        isAdmin: value.isAdmin,
         password: await bcrypt.hash(value.password, salt),
     }).save();
 }
