@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
 
-const userSchema = new mongoose.Schema({
+const User = mongoose.model('User', new mongoose.Schema({
     name: {
         type: String,
         required: true,
         minlength: 3,
-        maxlength: 255,
+        maxlength: 50,
         trim: true,
         set: v => v.toLowerCase(),
     },
@@ -23,16 +23,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         minlength: 6,
+        maxlength: 1024,
         trim: true,
     }
-});
-
-const User = mongoose.model('user', userSchema);
+}));
 
 const inputSchema = Joi.object({
-    name: Joi.string().required(),
-    email: Joi.string().required(),
-    password: Joi.string().required(),
+    name: Joi.string().min(3).max(50).required(),
+    email: Joi.string().min(6).max(255).required(),
+    password: Joi.string().min(6).max(255).required(),
     passwordAgain: Joi.string().required(),
 }).label('user').required();
 
