@@ -5,7 +5,6 @@ const { create, update, remove, getAll, get, validate } = require('../db/movie')
 const { get: getGenre } = require('../db/genre');
 
 const router = express.Router();
-router.use(express.json());
 
 router.get('/', async (req, res) => {
     const movies = await getAll();

@@ -4,7 +4,6 @@ const express = require('express');
 const { create, update, remove, getAll, get, validate } = require('../db/customer');
 
 const router = express.Router();
-router.use(express.json());
 
 router.get('/', async (req, res) => {
     const customers = await getAll();

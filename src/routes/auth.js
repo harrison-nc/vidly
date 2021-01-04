@@ -6,7 +6,6 @@ const Joi = require('joi');
 const { getByEmail } = require('../db/user');
 
 const router = express.Router();
-router.use(express.json());
 
 router.post('/', async (req, res) => {
     const { error } = validate(req.body);

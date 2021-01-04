@@ -17,6 +17,7 @@ if (!config.get('jwtPrivateKey')) {
 }
 
 const app = express();
+app.use(express.json());
 
 async function start() {
     await mongoose.connect('mongodb://localhost/vidly', {

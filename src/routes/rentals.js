@@ -5,7 +5,6 @@ const { get: getCustmer } = require('../db/customer');
 const { get: getMovie } = require('../db/movie');
 
 const router = express.Router();
-router.use(express.json());
 
 router.get('/', async (req, res) => {
     const rental = await rentals.getAll();

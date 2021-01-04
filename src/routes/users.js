@@ -4,7 +4,6 @@ const express = require('express');
 const { create, validate, get, getByEmail } = require('../db/user');
 
 const router = new express.Router();
-router.use(express.json());
 
 router.get('/me', auth, async (req, res) => {
     const user = await get(req.user._id);

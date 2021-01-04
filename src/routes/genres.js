@@ -4,7 +4,6 @@ const express = require('express');
 const { create, update, remove, getAll, get, validate } = require('../db/genre');
 
 const router = express.Router();
-router.use(express.json());
 
 // Get the list of genres;
 router.get('/', async (req, res) => {
