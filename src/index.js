@@ -18,11 +18,13 @@ if (!config.get('jwtPrivateKey')) {
 
 const app = express();
 
-async function main() {
+async function start() {
     await mongoose.connect('mongodb://localhost/vidly', {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     });
+
+    console.log('Connected to database.');
 
     app.use('/api/genres', genres);
     app.use('/api/customers', customers);
@@ -34,6 +36,14 @@ async function main() {
 
     const port = process.env.PORT || 3000;
     app.listen(port, () => console.log(`Listening on port ${port}...`));
+}
+
+async function main() {
+    try {
+        await start();
+    } catch (ex) {
+        console.log(ex);
+    }
 }
 
 main();
