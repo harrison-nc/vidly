@@ -31,9 +31,13 @@ router.post('/', async (req, res) => {
 
     if (movie.numberInStock == 0) return res.status(400).send('The movie is out of stock.');
 
-    const rental = await rentals.create(customer, movie);
-
-    res.send(rental);
+    try {
+        const rental = await rentals.create(customer, movie);
+        res.send(rental);
+    }
+    catch (ex) {
+        res.status(500).send('Something went wrong.');
+    }
 });
 
 module.exports = router;
