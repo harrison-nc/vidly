@@ -8,5 +8,10 @@ async function create(value) {
     }).save();
 }
 
+async function getByEmail(email) {
+    return await User.findOne({ email: email });
+}
+
 exports.create = create;
+exports.getByEmail = getByEmail;
 exports.validate = validate;
