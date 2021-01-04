@@ -1,3 +1,4 @@
+const auth = require('../middleware/auth');
 const express = require('express');
 const rentals = require('../db/rental');
 const { get: getCustmer } = require('../db/customer');
@@ -19,7 +20,7 @@ router.get('/:id', async (req, res) => {
     res.send(rental);
 })
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
     const { error } = rentals.validate(req.body.rental);
     if (error) return res.status(400).send(error.details[0].message);
 

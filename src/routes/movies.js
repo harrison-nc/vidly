@@ -1,3 +1,4 @@
+const auth = require('../middleware/auth');
 const express = require('express');
 const { create, update, remove, getAll, get, validate } = require('../db/movie');
 const { get: getGenre } = require('../db/genre');
@@ -18,7 +19,7 @@ router.get('/:id', async (req, res) => {
     res.send(movie);
 });
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
     const { error } = validate(req.body.movie);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -30,7 +31,7 @@ router.post('/', async (req, res) => {
     res.send(movie);
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
     const { error } = validate(req.body.movie);
     if (error) return res.status(400).send(error.details[0].message);
 
