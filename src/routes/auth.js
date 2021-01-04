@@ -1,4 +1,5 @@
-const asyncMiddleware = require('../middleware/async');
+const config = require('config');
+const jwt = require('jsonwebtoken');
 const express = require('express');
 const bcrypt = require('bcrypt');
 const Joi = require('joi');
@@ -7,7 +8,7 @@ const { getByEmail } = require('../db/user');
 const router = express.Router();
 router.use(express.json());
 
-router.post('/', asyncMiddleware(async (req, res) => {
+router.post('/', async (req, res) => {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -19,7 +20,7 @@ router.post('/', asyncMiddleware(async (req, res) => {
 
     const token = user.generateAuthToken();
     res.send(token);
-}));
+});
 
 const inputSchema = Joi.object({
     email: Joi.string().min(6).max(255).required().email(),

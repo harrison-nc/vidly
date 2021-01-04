@@ -1,18 +1,17 @@
 const _ = require('lodash');
 const auth = require('../middleware/auth');
-const asyncMiddleware = require('../middleware/async');
 const express = require('express');
 const { create, validate, get, getByEmail } = require('../db/user');
 
 const router = new express.Router();
 router.use(express.json());
 
-router.get('/me', auth, asyncMiddleware(async (req, res) => {
+router.get('/me', auth, async (req, res) => {
     const user = await get(req.user._id);
     res.send(user);
-}));
+});
 
-router.post('/', asyncMiddleware(async (req, res) => {
+router.post('/', async (req, res) => {
     const value = req.body.user;
     const { error } = validate(value);
     if (error) return res.status(400).send(error.details[0].message);
@@ -26,6 +25,6 @@ router.post('/', asyncMiddleware(async (req, res) => {
     user = await create(value);
     const token = user.generateAuthToken();
     res.header('x-auth-token', token).send(_.pick(user, ['_id', 'name', 'email']));
-}));
+});
 
 module.exports = router;

@@ -1,6 +1,5 @@
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
-const asyncMiddleware = require('../middleware/async');
 const express = require('express');
 const { create, update, remove, getAll, get, validate } = require('../db/movie');
 const { get: getGenre } = require('../db/genre');
@@ -8,20 +7,20 @@ const { get: getGenre } = require('../db/genre');
 const router = express.Router();
 router.use(express.json());
 
-router.get('/', asyncMiddleware(async (req, res) => {
+router.get('/', async (req, res) => {
     const movies = await getAll();
     res.send(movies);
-}));
+});
 
-router.get('/:id', asyncMiddleware(async (req, res) => {
+router.get('/:id', async (req, res) => {
     const movie = await get(req.params.id);
 
     if (!movie) return res.status(404).send('The movie this the given id was not found.');
 
     res.send(movie);
-}));
+});
 
-router.post('/', auth, asyncMiddleware(async (req, res) => {
+router.post('/', auth, async (req, res) => {
     const { error } = validate(req.body.movie);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -31,9 +30,9 @@ router.post('/', auth, asyncMiddleware(async (req, res) => {
 
     const movie = await create(req.body.movie, genre);
     res.send(movie);
-}));
+});
 
-router.put('/:id', auth, asyncMiddleware(async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
     const { error } = validate(req.body.movie);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -44,14 +43,14 @@ router.put('/:id', auth, asyncMiddleware(async (req, res) => {
     if (!movie) return res.status(404).send('The movie with the given id was not found.');
 
     res.send(movie);
-}));
+});
 
-router.delete('/:id', [auth, admin], asyncMiddleware(async (req, res) => {
+router.delete('/:id', [auth, admin], async (req, res) => {
     const movie = await remove(req.params.id);
 
     if (!movie) return res.status(404).send('The movie with the given id was not found.');
 
     res.send(movie);
-}));
+});
 
 module.exports = router;
