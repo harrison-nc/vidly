@@ -36,4 +36,12 @@ async function main() {
     app.listen(port, () => console.log(`Listening on port ${port}...`));
 }
 
-main();
+async function run() {
+    try {
+        await main();
+    } catch (ex) {
+        console.log(ex);
+    }
+}
+
+run();

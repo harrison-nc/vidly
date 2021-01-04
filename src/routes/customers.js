@@ -1,33 +1,34 @@
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
+const asyncMiddleware = require('../middleware/async');
 const express = require('express');
 const { create, update, remove, getAll, get, validate } = require('../db/customer');
 
 const router = express.Router();
 router.use(express.json());
 
-router.get('/', async (req, res) => {
+router.get('/', asyncMiddleware(async (req, res) => {
     const customers = await getAll();
     res.send(customers);
-});
+}));
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', asyncMiddleware(async (req, res) => {
     const customer = await get(req.params.id);
 
     if (!customer) return res.status(404).send('The customer with the given id was not found.');
 
     res.send(customer);
-});
+}));
 
-router.post('/', auth, async (req, res) => {
+router.post('/', auth, asyncMiddleware(async (req, res) => {
     const { error } = validate(req.body.customer);
     if (error) return res.status(400).send(error.details[0].message);
 
     const customer = await create(req.body.customer);
     res.send(customer);
-});
+}));
 
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', auth, asyncMiddleware(async (req, res) => {
     const { error } = validate(req.body.customer);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -36,14 +37,14 @@ router.put('/:id', auth, async (req, res) => {
     if (!customer) return res.status(404).send('The customer with given id was not found!');
 
     res.send(customer);
-});
+}));
 
-router.delete('/:id', [auth, admin], async (req, res) => {
+router.delete('/:id', [auth, admin], asyncMiddleware(async (req, res) => {
     const customer = await remove(req.params.id);
 
     if (!customer) return res.status(404).send('The customer with given id was not found!');
 
     res.send(customer);
-});
+}));
 
 module.exports = router;
