@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const express = require('express');
 const { create, validate, getByEmail } = require('../db/user');
 
@@ -16,7 +17,7 @@ router.post('/', async (req, res) => {
         return res.status(400).send('Password mismatch.');
 
     user = await create(value);
-    res.send(user);
+    res.send(_.pick(user, ['_id', 'name', 'email']));
 });
 
 module.exports = router;
