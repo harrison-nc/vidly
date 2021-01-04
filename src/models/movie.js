@@ -38,7 +38,7 @@ const Movie = mongoose.model('movie', movieSchema);
 
 const inputSchema = Joi.object({
     title: Joi.string().min(4).max(50).required(),
-    genreId: Joi.string().required(),
+    genreId: Joi.objectId().required(),
     numberInStock: Joi.number().min(0),
     dailyRentalRate: Joi.number().min(0),
 }).label('movie').required();
