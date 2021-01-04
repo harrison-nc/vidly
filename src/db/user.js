@@ -11,10 +11,15 @@ async function create(value) {
     }).save();
 }
 
+async function get(id) {
+    return await User.findById(id).select('-password');
+}
+
 async function getByEmail(email) {
     return await User.findOne({ email: email });
 }
 
 exports.create = create;
+exports.get = get;
 exports.getByEmail = getByEmail;
 exports.validate = validate;
