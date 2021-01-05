@@ -2,11 +2,11 @@ require('express-async-errors');
 const winston = require('winston');
 require('winston-mongodb');
 const mongoose = require('mongoose');
-const genres = require('./routes/genres');
 const config = require('config');
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
 const express = require('express');
+const db = require('./startup/db');
 const routes = require('./startup/routes');
 
 winston.handleExceptions(new winston.transports.File({
@@ -14,7 +14,6 @@ winston.handleExceptions(new winston.transports.File({
 }))
 
 process.on('unhandledRejection', (ex) => {
-    console.log('unhandled rejections');
     throw ex;
 });
 
@@ -37,17 +36,11 @@ if (!config.get('db.url')) {
     process.exit(1);
 }
 
-const app = express();
 
 async function main() {
-    await mongoose.connect(config.get('db.url'), {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-    });
+    const app = express();
 
-    console.log('Connected to database.');
-
+    await db();
     routes(app);
 
     const port = parseInt(config.get('db.port')) || 3000;
