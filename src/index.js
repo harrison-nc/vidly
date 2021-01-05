@@ -1,30 +1,11 @@
-require('express-async-errors');
-const winston = require('winston');
-require('winston-mongodb');
-const mongoose = require('mongoose');
-const config = require('config');
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
+const config = require('config');
 const express = require('express');
+
+require('./startup/logging');
 const db = require('./startup/db');
 const routes = require('./startup/routes');
-
-winston.handleExceptions(new winston.transports.File({
-    filename: config.get('log.exfilename')
-}))
-
-process.on('unhandledRejection', (ex) => {
-    throw ex;
-});
-
-winston.add(winston.transports.File, {
-    filename: config.get('log.filename')
-});
-
-winston.add(winston.transports.MongoDB, {
-    db: config.get('log.db.url'),
-    level: 'info',
-});
 
 if (!config.get('jwtPrivateKey')) {
     console.log('FATAL ERROR: jwtPrivateKey not defined.');
@@ -35,7 +16,6 @@ if (!config.get('db.url')) {
     console.log('FATAL ERROR: Database url not defined.');
     process.exit(1);
 }
-
 
 async function main() {
     const app = express();
