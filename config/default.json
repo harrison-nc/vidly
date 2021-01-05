@@ -1,5 +1,9 @@
 {
     "jwtPrivateKey": "",
+    "db": {
+        "url": "",
+        "port": ""
+    },
     "log": {
         "filename": "",
         "db": {

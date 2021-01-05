@@ -28,11 +28,16 @@ if (!config.get('jwtPrivateKey')) {
     process.exit(1);
 }
 
+if (!config.get('db.url')) {
+    console.log('FATAL ERROR: Database url not defined.');
+    process.exit(1);
+}
+
 const app = express();
 app.use(express.json());
 
 async function start() {
-    await mongoose.connect('mongodb://localhost/vidly', {
+    await mongoose.connect(config.get('db.url'), {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,
@@ -48,7 +53,7 @@ async function start() {
     app.use('/api/logins', auth);
     app.use(error);
 
-    const port = process.env.PORT || 3000;
+    const port = parseInt(config.get('db.port')) || 3000;
     app.listen(port, () => console.log(`Listening on port ${port}...`));
 }
 
