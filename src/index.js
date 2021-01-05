@@ -1,5 +1,6 @@
 require('express-async-errors');
 const winston = require('winston');
+require('winston-mongodb');
 const mongoose = require('mongoose');
 const genres = require('./routes/genres');
 const config = require('config');
@@ -14,7 +15,12 @@ const error = require('./middleware/error');
 const express = require('express');
 
 winston.add(winston.transports.File, {
-    filename: config.get('logfilename')
+    filename: config.get('log.filename')
+});
+
+winston.add(winston.transports.MongoDB, {
+    db: config.get('log.db.url'),
+    level: 'info',
 });
 
 if (!config.get('jwtPrivateKey')) {

@@ -1,4 +1,9 @@
 {
     "jwtPrivateKey": "",
-    "logfilename": ""
+    "log": {
+        "filename": "",
+        "db": {
+            "url": ""
+        }
+    }
 }

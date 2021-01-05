@@ -1,4 +1,9 @@
 {
     "jwtPrivateKey": "vidly_jwtPrivateKey",
-    "logfilename": "vidly_logfilename"
+    "log": {
+        "filename": "vidly_logfilename",
+        "db": {
+            "url": "vidly_logdburl"
+        }
+    }
 }
