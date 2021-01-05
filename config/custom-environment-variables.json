@@ -6,6 +6,7 @@
     },
     "log": {
         "filename": "vidly_logfilename",
+        "exfilename": "vidly_logexfilename",
         "db": {
             "url": "vidly_logdburl"
         }

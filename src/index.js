@@ -14,14 +14,13 @@ const auth = require('./routes/auth');
 const error = require('./middleware/error');
 const express = require('express');
 
-process.on('uncaughtException', (ex) => {
-    console.log('WE GOT AN UNCAUGHT EXCEPTION');
-    winston.error(ex.message, ex);
-});
+winston.handleExceptions(new winston.transports.File({
+    filename: config.get('log.exfilename')
+}))
 
 process.on('unhandledRejection', (ex) => {
-    console.log('WE GOT AN UNHANDLED REJECTION');
-    winston.error(ex.message, ex);
+    console.log('unhandled rejections');
+    throw ex;
 });
 
 winston.add(winston.transports.File, {
@@ -46,7 +45,7 @@ if (!config.get('db.url')) {
 const app = express();
 app.use(express.json());
 
-async function start() {
+async function main() {
     await mongoose.connect(config.get('db.url'), {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -65,14 +64,6 @@ async function start() {
 
     const port = parseInt(config.get('db.port')) || 3000;
     app.listen(port, () => console.log(`Listening on port ${port}...`));
-}
-
-async function main() {
-    try {
-        await start();
-    } catch (ex) {
-        console.log(ex);
-    }
 }
 
 main();

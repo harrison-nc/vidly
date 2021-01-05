@@ -6,6 +6,7 @@
     },
     "log": {
         "filename": "",
+        "exfilename": "",
         "db": {
             "url": ""
         }
