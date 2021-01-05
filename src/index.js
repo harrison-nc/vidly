@@ -1,3 +1,4 @@
+require('express-async-errors');
 const mongoose = require('mongoose');
 const genres = require('./routes/genres');
 const config = require('config');
@@ -23,6 +24,7 @@ async function start() {
     await mongoose.connect('mongodb://localhost/vidly', {
         useNewUrlParser: true,
         useUnifiedTopology: true,
+        useCreateIndex: true,
     });
 
     console.log('Connected to database.');
