@@ -1,0 +1,14 @@
+{
+    "jwtPrivateKey": "1234",
+    "db": {
+        "url": "",
+        "port": ""
+    },
+    "log": {
+        "filename": "",
+        "exfilename": "",
+        "db": {
+            "url": ""
+        }
+    }
+}
