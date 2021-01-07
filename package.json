@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --testEnvironment node --watchAll"
+    "test": "jest --verbose --testEnvironment node --watchAll"
   },
   "keywords": [],
   "author": "",

@@ -1,6 +1,6 @@
 const config = require('config');
 const winston = require('winston');
-require('winston-mongodb');
+// require('winston-mongodb');
 require('express-async-errors');
 
 module.exports = function () {
@@ -25,11 +25,11 @@ module.exports = function () {
     }
     else winston.warn('log.filename is not defined.');
 
-    if (config.get('log.db.url')) {
-        winston.add(winston.transports.MongoDB, {
-            db: config.get('log.db.url'),
-            level: 'info',
-        });
-    }
-    else winston.warn('log.db.url is not defined.');
+    // if (config.get('log.db.url')) {
+    //     winston.add(winston.transports.MongoDB, {
+    //         db: config.get('log.db.url'),
+    //         level: 'info',
+    //     });
+    // }
+    // else winston.warn('log.db.url is not defined.');
 }
