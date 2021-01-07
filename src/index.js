@@ -10,4 +10,6 @@ require('./startup/validation')();
 require('./startup/routes')(app);
 
 const port = parseInt(config.get('port')) || 3000;
-app.listen(port, () => winston.info(`Listening on port ${port}...`));
+const server = app.listen(port, () => winston.info(`Listening on port ${port}...`));
+
+module.exports = server;
