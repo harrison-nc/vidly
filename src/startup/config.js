@@ -5,7 +5,7 @@ module.exports = function () {
         throw new Error('FATAL ERROR: jwtPrivateKey not defined.');
     }
 
-    if (!config.get('db.url')) {
+    if (!config.get('db')) {
         throw new Error('FATAL ERROR: Database url not defined.');
     }
 }

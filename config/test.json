@@ -1,14 +1,12 @@
 {
     "jwtPrivateKey": "1234",
-    "db": {
-        "url": "",
-        "port": ""
-    },
+    "port": "3000",
+    "db": "mongodb://localhost/vidly_tets",
     "log": {
-        "filename": "",
-        "exfilename": "",
+        "filename": "vidly_test.log",
+        "exfilename": "vidly_test_error.log",
         "db": {
-            "url": ""
+            "url": "mongodb://localhost/vidly_test_logs"
         }
     }
 }

@@ -9,5 +9,5 @@ require('./startup/db')();
 require('./startup/validation')();
 require('./startup/routes')(app);
 
-const port = parseInt(config.get('db.port')) || 3000;
+const port = parseInt(config.get('port')) || 3000;
 app.listen(port, () => winston.info(`Listening on port ${port}...`));
