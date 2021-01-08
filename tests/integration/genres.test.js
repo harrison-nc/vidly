@@ -5,12 +5,11 @@ const ObjectId = require('mongoose').Types.ObjectId;
 let server;
 
 describe('/api/genres', () => {
-    beforeEach(() => { server = require('../../src/index'); });
+    beforeAll(() => { server = require('../../src/index'); });
 
-    afterEach(async () => {
-        await Genre.deleteMany({});
-        server.close();
-    });
+    afterAll(async () => { await server.close(); });
+
+    afterEach(async () => { await Genre.deleteMany({}); });
 
     describe('GET /', () => {
         it('should return all genres', async () => {
@@ -110,6 +109,101 @@ describe('/api/genres', () => {
 
             expect(res.body).toHaveProperty('_id');
             expect(res.body).toHaveProperty('name', 'genre1');
+        });
+    });
+
+    describe('PUT /api/genres/:id', () => {
+        let token;
+        let name;
+        let genreId;
+
+        const updateGenre = () => {
+            return request(server)
+                .put('/api/genres/' + genreId)
+                .set('x-auth-token', token)
+                .send({ name });
+        };
+
+        beforeEach(async () => {
+            name = 'genre1'
+            const genre = await new Genre({ name }).save();
+            genreId = genre._id;
+            token = new User().generateAuthToken();
+        });
+
+        it('should return 401 if token is not given', async () => {
+            token = '';
+
+            const res = await updateGenre();
+
+            expect(res.status).toBe(401);
+        });
+
+        it('should return 400 if token is invalid', async () => {
+            token = 'a';
+
+            const res = await updateGenre();
+
+            expect(res.status).toBe(400);
+        });
+
+        it('should return 200 if token is valid', async () => {
+            const res = await updateGenre();
+
+            expect(res.status).toBe(200);
+        });
+
+        it('should return 404 if genreId is invalid', async () => {
+            genreId = 'a';
+
+            const res = await updateGenre();
+
+            expect(res.status).toBe(404);
+        });
+
+        it('should return 404 if genre is not found', async () => {
+            genreId = new ObjectId().toHexString();
+
+            const res = await updateGenre();
+
+            expect(res.status).toBe(404);
+        });
+
+        it('should return 400 if name length is less than 5', async () => {
+            name = '1234';
+
+            const res = await updateGenre();
+
+            expect(res.status).toBe(400);
+        });
+
+        it('should return 400 if name length is more than 50', async () => {
+            name = new Array(52).join('a');
+
+            const res = await updateGenre();
+
+            expect(res.status).toBe(400);
+        });
+
+        it('should update the genre if it is valid and user is authenticated', async () => {
+            name = 'new name';
+
+            await updateGenre();
+
+            const result = await Genre.findOne({ name }).select('_id name');
+
+            expect(result).toBeDefined();
+            expect(result).toMatchObject({ _id: genreId, name: name });
+        });
+
+        it('should return the genre if it is valid', async () => {
+            name = 'new name';
+
+            const res = await updateGenre();
+
+            expect(res.body).toBeDefined();
+            expect(res.body).toHaveProperty('_id');
+            expect(res.body).toHaveProperty('name', name);
         });
     });
 });

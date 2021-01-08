@@ -33,7 +33,7 @@ router.post('/', auth, async (req, res) => {
 // Update a genre
 router.put('/:id', [auth, validateObjectId], async (req, res) => {
     const { error } = validate(req.body);
-    if (error) return req.status(400).send(error.details[0].message);
+    if (error) return res.status(400).send(error.details[0].message);
 
     const genre = await update(req.params.id, req.body.name);
     if (!genre) return res.status(404).send("The genre with the given id was not found.");
