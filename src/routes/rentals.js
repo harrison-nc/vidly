@@ -3,6 +3,7 @@ const express = require('express');
 const rentals = require('../db/rental');
 const { get: getCustmer } = require('../db/customer');
 const { get: getMovie } = require('../db/movie');
+const validateObjectId = require('../middleware/validateObjectId');
 
 const router = express.Router();
 
@@ -11,7 +12,7 @@ router.get('/', async (req, res) => {
     res.send(rental);
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', validateObjectId, async (req, res) => {
     const rental = await rentals.get(req.params.id);
 
     if (!rental) return res.status(404).send('The rental with the given id was not found.');
@@ -19,7 +20,7 @@ router.get('/:id', async (req, res) => {
     res.send(rental);
 })
 
-router.post('/', auth, async (req, res) => {
+router.post('/', [auth, validateObjectId], async (req, res) => {
     const { error } = rentals.validate(req.body.rental);
     if (error) return res.status(400).send(error.details[0].message);
 

@@ -3,6 +3,7 @@ const admin = require('../middleware/admin');
 const express = require('express');
 const { create, update, remove, getAll, get, validate } = require('../db/movie');
 const { get: getGenre } = require('../db/genre');
+const validateObjectId = require('../middleware/validateObjectId');
 
 const router = express.Router();
 
@@ -11,7 +12,7 @@ router.get('/', async (req, res) => {
     res.send(movies);
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', validateObjectId, async (req, res) => {
     const movie = await get(req.params.id);
 
     if (!movie) return res.status(404).send('The movie this the given id was not found.');
@@ -31,7 +32,7 @@ router.post('/', auth, async (req, res) => {
     res.send(movie);
 });
 
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', [auth, validateObjectId], async (req, res) => {
     const { error } = validate(req.body.movie);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -44,7 +45,7 @@ router.put('/:id', auth, async (req, res) => {
     res.send(movie);
 });
 
-router.delete('/:id', [auth, admin], async (req, res) => {
+router.delete('/:id', [auth, admin, validateObjectId], async (req, res) => {
     const movie = await remove(req.params.id);
 
     if (!movie) return res.status(404).send('The movie with the given id was not found.');
