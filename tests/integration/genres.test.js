@@ -7,8 +7,8 @@ describe('/api/genres', () => {
     beforeEach(() => { server = require('../../src/index'); });
 
     afterEach(async () => {
-        server.close();
         await Genre.deleteMany({});
+        server.close();
     });
 
     describe('GET /', () => {
@@ -27,14 +27,14 @@ describe('/api/genres', () => {
     });
 
     describe('GET /:id', () => {
-        it('should return a genre if valid id is given', async () => {
+        it('should return a genre if the given id is valid', async () => {
             const genre = await new Genre({ name: "genre" }).save();
             const res = await request(server).get(`/api/genres/${genre._id}`);
             expect(res.status).toBe(200);
             expect(res.body).toHaveProperty('name', genre.name);
         });
 
-        it('should return 404 if invalid id is given', async () => {
+        it('should return 404 if an invalid id is given', async () => {
             const res = await request(server).get('/api/genres/1');
             expect(res.status).toBe(404);
         });
