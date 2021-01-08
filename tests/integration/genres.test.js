@@ -206,4 +206,88 @@ describe('/api/genres', () => {
             expect(res.body).toHaveProperty('name', name);
         });
     });
+
+    describe('DELETE /api/genres/:id', () => {
+        let token;
+        let genreId;
+        let isAdmin;
+
+        const deleteGenre = () => {
+            return request(server)
+                .delete('/api/genres/' + genreId)
+                .set('x-auth-token', token);
+        };
+
+        const generateToken = () => {
+            return new User({
+                _id: new ObjectId(),
+                isAdmin: isAdmin
+            }).generateAuthToken();
+        };
+
+        beforeEach(async () => {
+            isAdmin = true;
+            token = generateToken();
+            const genre = await new Genre({ name: 'genre1' }).save();
+            genreId = genre._id;
+        });
+
+        afterEach(async () => {
+            await Genre.deleteMany({});
+        });
+
+        it('should return 401 if token is not provided', async () => {
+            token = '';
+
+            const res = await deleteGenre();
+
+            expect(res.status).toBe(401);
+        });
+
+        it('should return 400 if token is invalid', async () => {
+            token = 'a';
+
+            const res = await deleteGenre();
+
+            expect(res.status).toBe(400);
+        });
+
+        it('should return 403 if user is not admin', async () => {
+            isAdmin = false;
+
+            token = generateToken();
+
+            const res = await deleteGenre();
+
+            expect(res.status).toBe(403);
+        });
+
+        it('should return 404 if genreId is invalid', async () => {
+            genreId = 'a';
+
+            const res = await deleteGenre();
+
+            expect(res.status).toBe(404);
+        });
+
+        it('should return 404 if a genre with the given id does not exist', async () => {
+            genreId = new ObjectId().toHexString();
+
+            const res = await deleteGenre();
+
+            expect(res.status).toBe(404);
+        });
+
+        it('should return 200 genre was deleted successfully', async () => {
+            const res = await deleteGenre();
+
+            expect(res.status).toBe(200);
+        });
+
+        it('should return genre if it was deleted successfully', async () => {
+            const res = await deleteGenre();
+
+            expect(res.body).toMatchObject({ _id: genreId.toHexString(), name: 'genre1' });
+        });
+    });
 });
