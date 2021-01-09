@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --verbose --testEnvironment node --watchAll"
+    "test": "jest --verbose --testEnvironment node --watchAll --runInBand --detectOpenHandles"
   },
   "keywords": [],
   "author": "",

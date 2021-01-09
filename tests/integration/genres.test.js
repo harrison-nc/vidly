@@ -5,11 +5,12 @@ const ObjectId = require('mongoose').Types.ObjectId;
 let server;
 
 describe('/api/genres', () => {
-    beforeAll(() => { server = require('../../src/index'); });
+    beforeEach(() => { server = require('../../src/index'); });
 
-    afterAll(async () => { await server.close(); });
-
-    afterEach(async () => { await Genre.deleteMany({}); });
+    afterEach(async () => {
+        await Genre.deleteMany({});
+        await server.close();
+    });
 
     describe('GET /', () => {
         it('should return all genres', async () => {
@@ -230,10 +231,6 @@ describe('/api/genres', () => {
             token = generateToken();
             const genre = await new Genre({ name: 'genre1' }).save();
             genreId = genre._id;
-        });
-
-        afterEach(async () => {
-            await Genre.deleteMany({});
         });
 
         it('should return 401 if token is not provided', async () => {
