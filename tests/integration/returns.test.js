@@ -63,4 +63,12 @@ describe('/api/returns', () => {
 
         expect(res.status).toBe(400);
     });
+
+    it('should return 404 if no rental was found for the customer and movie', async () => {
+        await Rental.deleteMany({});
+
+        const res = await createRental({ customerId, movieId }, token);
+
+        expect(res.status).toBe(404);
+    });
 });
