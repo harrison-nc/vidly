@@ -86,4 +86,13 @@ describe('/api/returns', () => {
 
         expect(res.status).toBe(200);
     });
+
+    it('should set the return date if input is valid', async () => {
+        await returnRental({ customerId, movieId }, token);
+
+        const rentalInDb = await Rental.findById(rental._id);
+        const diff = Date.now() - rentalInDb.dateReturned;
+
+        expect(diff).toBeLessThan(40);
+    });
 });

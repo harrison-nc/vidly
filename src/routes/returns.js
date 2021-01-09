@@ -12,6 +12,8 @@ router.post('/', auth, async (req, res) => {
 
     if (rental.dateReturned) return res.status(400).send('Return already processed.');
 
+    await returnRental(rental);
+
     res.status(200).send();
 });
 
@@ -20,6 +22,11 @@ function get(customerId, movieId) {
         'customer._id': customerId,
         'movie._id': movieId,
     });
+}
+
+function returnRental(rental) {
+    rental.dateReturned = Date.now();
+    return rental.save();
 }
 
 module.exports = router;
