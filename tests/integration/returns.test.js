@@ -73,7 +73,7 @@ describe('/api/returns', () => {
     });
 
     it('should return 400 if rental return is already processed', async () => {
-        rental.movie.dateReturned = Date.now();
+        rental.dateReturned = Date.now();
         await rental.save();
 
         const res = await returnRental({ customerId, movieId }, token);

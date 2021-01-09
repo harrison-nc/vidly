@@ -10,7 +10,7 @@ router.post('/', auth, async (req, res) => {
     const rental = await get(req.body.customerId, req.body.movieId)
     if (!rental) return res.status(404).send('Rental not found for the given customer and movie');
 
-    if (rental.movie.dateReturned) return res.status(400).send('Return already processed.');
+    if (rental.dateReturned) return res.status(400).send('Return already processed.');
 
     res.status(200).send();
 });
