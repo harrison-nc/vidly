@@ -3,6 +3,8 @@ const router = express.Router();
 const { Rental } = require('../models/rental');
 
 router.post('/', async (req, res) => {
+    if (!req.headers['x-auth-token']) return res.status(401).send('Unauthorized!');
+
     if (!req.body.customerId) return res.status(400).send('customerId not provided.');
     if (!req.body.movieId) return res.status(400).send('movieId not provided.');
 
@@ -11,7 +13,7 @@ router.post('/', async (req, res) => {
 
     if (rental.movie.dateReturned) return res.status(400).send('Return already processed.');
 
-    res.status(401).send('Unauthorized');
+    res.status(200).send();
 });
 
 function get(customerId, movieId) {

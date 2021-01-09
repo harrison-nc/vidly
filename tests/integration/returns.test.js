@@ -67,7 +67,7 @@ describe('/api/returns', () => {
     it('should return 404 if no rental was found for the customer and movie', async () => {
         await Rental.deleteMany({});
 
-        const res = await createRental({ customerId, movieId }, token);
+        const res = await returnRental({ customerId, movieId }, token);
 
         expect(res.status).toBe(404);
     });
@@ -79,5 +79,11 @@ describe('/api/returns', () => {
         const res = await returnRental({ customerId, movieId }, token);
 
         expect(res.status).toBe(400);
+    });
+
+    it('should return 200 if request is valid', async () => {
+        const res = await returnRental({ customerId, movieId }, token);
+
+        expect(res.status).toBe(200);
     });
 });
