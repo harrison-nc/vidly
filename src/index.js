@@ -9,7 +9,7 @@ require('./startup/db')();
 require('./startup/validation')();
 require('./startup/routes')(app);
 
-const port = parseInt(config.get('port')) || 3000;
+const port = parseInt(config.get('port'));
 const server = app.listen(port, () => winston.info(`Listening on port ${port}...`));
 
 module.exports = server;
