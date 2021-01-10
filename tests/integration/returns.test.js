@@ -1,16 +1,19 @@
 const moment = require('moment');
 const ObjectId = require('mongoose').Types.ObjectId;
 const request = require('supertest');
+const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
+
 const { User } = require('../../src/models/user');
+const { Rental } = require('../../src/models/rental');
+const { Movie } = require('../../src/models/movie');
 
 describe('/api/returns', () => {
     let server;
     let customerId;
     let movieId;
     let rental;
-    let Rental;
     let movie;
-    let Movie;
     let token;
 
     const returnRental = (payload, token) => {
@@ -22,8 +25,6 @@ describe('/api/returns', () => {
 
     beforeEach(async () => {
         server = require('../../src/index');
-        Rental = require('../../src/models/rental').Rental;
-        Movie = require('../../src/models/movie').Movie;
 
         customerId = new ObjectId();
         movieId = new ObjectId();
