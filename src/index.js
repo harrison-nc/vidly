@@ -7,6 +7,7 @@ require('./startup/logging')();
 require('./startup/config')();
 require('./startup/db')();
 require('./startup/validation')();
+require('./startup/prod')(app);
 require('./startup/routes')(app);
 
 const port = parseInt(config.get('port'));
