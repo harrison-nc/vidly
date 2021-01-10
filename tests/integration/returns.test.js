@@ -129,4 +129,13 @@ describe('/api/returns', () => {
 
         expect(movieInDb.numberInStock).toBe(movie.numberInStock + 1);
     });
+
+    it('should return the rental if input is valid', async () => {
+        const res = await returnRental({ customerId, movieId }, token);
+
+        expect(res.status).toBe(200);
+        expect(Object.keys(res.body)).toEqual(expect.arrayContaining([
+            'dateOut', 'dateReturned', 'rentalFee', 'customer', 'movie'
+        ]));
+    });
 });
