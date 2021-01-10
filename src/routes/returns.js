@@ -1,14 +1,16 @@
-const auth = require('../../src/middleware/auth');
 const moment = require('moment');
 const express = require('express');
 const router = express.Router();
+
+const auth = require('../../src/middleware/auth');
+const validator = require('../middleware/validateRequestParameters');
 const { Rental } = require('../models/rental');
 const { Movie } = require('../models/movie');
+const { validate: validateReturn } = require('../models/returns');
 
-router.post('/', auth, async (req, res) => {
-    if (!req.body.customerId) return res.status(400).send('customerId not provided.');
-    if (!req.body.movieId) return res.status(400).send('movieId not provided.');
+const validate = validator(validateReturn);
 
+router.post('/', [auth, validate], async (req, res) => {
     let rental = await get(req.body.customerId, req.body.movieId)
     if (!rental) return res.status(404).send('Rental not found for the given customer and movie');
 
