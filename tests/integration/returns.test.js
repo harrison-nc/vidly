@@ -1,3 +1,4 @@
+const moment = require('moment');
 const ObjectId = require('mongoose').Types.ObjectId;
 const request = require('supertest');
 const { User } = require('../../src/models/user');
@@ -94,5 +95,16 @@ describe('/api/returns', () => {
         const diff = Date.now() - rentalInDb.dateReturned;
 
         expect(diff).toBeLessThan(40);
+    });
+
+    it('should set the rental fee if input is valid', async () => {
+        rental.dateOut = moment().add(-7, 'days').toDate();
+        await rental.save();
+
+        await returnRental({ customerId, movieId }, token);
+
+        const rentalInDb = await Rental.findById(rental._id);
+
+        expect(rentalInDb.rentalFee).toBe(14);
     });
 });

@@ -1,4 +1,5 @@
 const auth = require('../../src/middleware/auth');
+const moment = require('moment');
 const express = require('express');
 const router = express.Router();
 const { Rental } = require('../models/rental');
@@ -26,6 +27,8 @@ function get(customerId, movieId) {
 
 function returnRental(rental) {
     rental.dateReturned = Date.now();
+    const rentalDays = moment().diff(rental.dateOut, 'days');
+    rental.rentalFee = rentalDays * rental.movie.dailyRentalRate;
     return rental.save();
 }
 
