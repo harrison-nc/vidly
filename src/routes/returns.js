@@ -15,7 +15,7 @@ router.post('/', [auth, validateParams], async (req, res) => {
 
     rental = await returnRental(rental);
 
-    res.status(200).send(rental);
+    res.send(rental);
 });
 
 module.exports = router;
