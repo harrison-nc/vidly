@@ -1,10 +1,14 @@
 {
   "name": "vidly",
   "version": "1.0.0",
-  "description": "",
+  "description": "Simple movie rental application",
   "main": "index.js",
   "scripts": {
-    "test": "jest --verbose --testEnvironment node --watchAll --runInBand --detectOpenHandles"
+    "test": "jest --verbose --testEnvironment node --watchAll --runInBand --detectOpenHandles",
+    "start": "node src/index.js"
+  },
+  "engines": {
+    "node": "v15.4.0"
   },
   "keywords": [],
   "author": "",
